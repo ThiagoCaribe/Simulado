@@ -28,6 +28,7 @@ const Container2 = styled.div`
     .aluno-matriculado{
         margin: 1.5em;
         padding: 1.5em;
+        
         display: flex;
         flex-direction: column;
         background-color: white;
@@ -36,6 +37,8 @@ const Container2 = styled.div`
     }
     table {
         border-collapse: collapse;
+        border-spacing: 0;
+       
         }
             
     thead{
@@ -56,8 +59,9 @@ const Container2 = styled.div`
     
     td{
         font-size: 1em;
-        padding: 1em;
+        padding: 0.5em;
         text-align: center;
+        
     }
 `
 const Input = styled.input`
