@@ -1,18 +1,26 @@
-import { useState , useRef } from 'react';
+import { useState , useRef, useEffect } from 'react';
 import { Container2 , Input } from "./containe2Styled";
 import Cabecalho from "../../compenentes/cabecalho";
 import Test from "../../compenentes/titulo";
 import { ButtonC } from "../../compenentes/botaoStyled";
-import ReactTooltip from 'react-tooltip';
 import Api from '../../services/api';
 import { ToastContainer, toast } from 'react-toastify';
 import LoadingBar   from 'react-top-loading-bar'
 import 'react-toastify/dist/ReactToastify.css';
+import { confirmAlert } from 'react-confirm-alert'; 
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const api = new Api();
 
 
 export default function Faixa2(){
+    
+    useEffect(() => {
+        console.log('just one time');
+        ListaAluno();
+    }, [])
+
+    // zona de teste acima 
     const [matricula, setMatricula] = useState([]);
     const [aluno, setAluno] = useState('Novo aluno');
     const [btn, setBtn] = useState('Cadastrar');
@@ -87,15 +95,28 @@ export default function Faixa2(){
         return;
     }
     const apagarAluno = async (id) => {
-        await api.apagarAluno(id);
-        toast.dark("Aluno removido !!");
-        ListaAluno();
-        return;
+        confirmAlert({
+            title : 'Excluindo aluno',
+            message : `Quer mesmo remove o aluno ${id} ?`,
+            buttons : [
+                {
+                    label : 'sim',
+                    onClick : async () => {
+                      await api.apagarAluno(id);
+                        toast.dark("Aluno removido !!");
+                        ListaAluno();
+                        return;
+                    }
+                },
+                {
+                    label : 'não'
+                }
+            ]
+        });
     }
     return(
         <Container2> 
             <LoadingBar color='pink' ref={carre} />
-            <ReactTooltip />
             <Cabecalho teste={ListaAluno} />
                 <div className='novo-aluno'>
                     <Test aluno={aluno}/>
@@ -139,7 +160,7 @@ export default function Faixa2(){
                             {matricula.map(x=>
                                 <tr>
                                     <td >{x.id_matricula}</td>
-                                    <td data-tip="">{x.nm_aluno}</td>    
+                                    <td title={x.nm_aluno} >{x.nm_aluno.length > 30 ? x.nm_aluno.substring(0, 30)+'...' : x.nm_aluno }</td>    
                                     <td>{x.nr_chamada}</td>
                                     <td>{x.nm_curso}</td>
                                     <td>{x.nm_turma}</td>
