@@ -14,7 +14,13 @@ app.get('/matricula', async (req, resp) =>{
 
 app.post('/matricula', async (req, resp) =>{
     let info = req.body;
-    if(info.chamada < 0){
+    let check = await db.tb_matricula.findOne({where : {nr_chamada : info.chamada}});
+    if(check != null ){
+        resp.send({erro : "Nesta sala ja tem um aluno com está chamada"})
+    }
+    if(info.nome == null || info.nome == '' || info.chamada == null || info.chamada == '' ||  info.curso == null || info.curso == '' ||  info.turma == null || info.turma == ''  )
+        resp.send({erro:'algum campos esta vazio por favor preencher todos campos'})
+    if(info.chamada < 0 ){
         resp.send({erro:"Numero de chamada negativo"})
     }else{
         var r = {
@@ -25,7 +31,7 @@ app.post('/matricula', async (req, resp) =>{
         };
     }
     let res = await db.tb_matricula.create(r);
-    resp.send(res);
+    resp.send('aluno inserido');
 
 })
 
@@ -35,9 +41,18 @@ app.put('/matricula/:id', async (req, resp) =>{
     let cham= req.body.chamada;
     let curso= req.body.curso;
     let turma = req.body.turma;
-    console.log(cham);
-    var alt = await db.tb_matricula.update({ nm_aluno : nome , nr_chamada : cham, nm_curso :curso, nm_turma : turma}, {where : {id_matricula :  req.params.id}});
-    resp.send(200);
+
+    let check = await db.tb_matricula.findOne({where : {nr_chamada : cham}});
+    
+    
+    if(nome == null || nome == '' || cham == null || cham == '' ||  curso == null || curso == '' ||  turma == null ||turma == ''  )
+        resp.send({erro:'algum campos esta vazio por favor preencher todos campos'})
+    if(cham < 0 ){
+        resp.send({erro:"Numero de chamada negativo"}) 
+    }else{
+        var alt = await db.tb_matricula.update({ nm_aluno : nome , nr_chamada : cham, nm_curso :curso, nm_turma : turma}, {where : {id_matricula :  req.params.id}});
+        resp.send(200);
+    }
 })
  app.delete('/matricula/:id', async (req, resp) =>{
 

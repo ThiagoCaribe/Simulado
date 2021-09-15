@@ -25,4 +25,9 @@ export default class Api{
         let r = await api.put(`/matricula/${id}`, { nome : nome, chamada : chamada, curso : curso,  turma : turma });
         return r.data;
     }
+    async apagarAluno(id){
+        let r = await api.delete(`/matricula/`+id )
+        return r.data;
+
+    }
 }
